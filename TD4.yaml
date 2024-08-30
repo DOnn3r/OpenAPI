@@ -1,0 +1,357 @@
+openapi: 3.0.0
+info:
+  title: STD23008 - TD1
+  version: 1.0.0
+
+servers: 
+  - url: https://localhost.STD23008.com
+
+paths:
+  /customers:
+    get:
+      tags: 
+        - User
+      parameters:
+        - name: page
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: pageSize
+          in: query
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of customers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Customer"
+    post:
+      tags:
+        - User
+      requestBody:
+        description: Customers to create
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/CreateCustomer"
+      responses:
+        '200':
+          description: List of created Customers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Customer"
+    put:
+      tags:
+        - User
+      requestBody:
+        description: Update Customers
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/UpdateCustomer"
+      responses:
+        '200':
+          description: Update Customers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Customer"
+    delete:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/CustomerIdentifier'
+        required: true
+      responses:
+        200:
+          description: List of deleted customers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Customer'
+                  
+  /customers/{customerId}/orders:
+    get:
+      tags: 
+        - Orders
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of orders for a customer
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Order"
+    post:
+      tags:
+        - Orders
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Order to create
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateOrder"
+      responses:
+        '200':
+          description: Created order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+
+  /customers/{customerId}/orders/{ordersID}:
+    put:
+      tags:
+        - Orders
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: ordersID
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Order to update
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateOrder"
+      responses:
+        '200':
+          description: Updated order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+  /meals:
+    get:
+      tags: 
+        - Meal
+      parameters:
+        - name: page
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: pageSize
+          in: query
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of meals
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Meal"
+    post:
+      tags: 
+        - Meal
+      requestBody:
+        description: Meal to create
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateMeal"
+      responses:
+        '200':
+          description: Created meal
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Meal"
+    put:
+      tags: 
+        - Meal
+      requestBody:
+        description: Meal to update
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateMeal'
+      responses:
+        200:
+          description: Updated meal
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Meal'
+    delete:
+      tags: 
+        - Meal
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/MealIdentifier'
+        required: true
+      responses:
+        200:
+          description: List of deleted meals
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Meal'
+
+components:
+  schemas:
+    Customer:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        age:
+          type: integer
+
+    CreateCustomer:
+      type: object
+      properties:
+        name:
+          type: string
+        age:
+          type: integer
+
+    UpdateCustomer:
+      type: object
+      properties:
+        name:
+          type: string
+        age:
+          type: integer
+
+    CustomerIdentifier:
+      type: object
+      properties:
+        id:
+          type: string
+
+    Meal:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        price:
+          type: number
+          format: decimal
+
+    CreateMeal:
+      type: object
+      properties:
+        name:
+          type: string
+        price:
+          type: number
+          format: decimal
+
+    UpdateMeal:
+      type: object
+      properties:
+        name:
+          type: string
+        price:
+          type: number
+          format: decimal
+
+    MealIdentifier:
+      type: object
+      properties:
+        id:
+          type: integer
+
+    Order:
+      type: object
+      properties:
+        id:
+          type: string
+        reference:
+          type: string
+        meals:
+          type: array
+          items:
+            type: object
+            properties:
+              meal:
+                $ref: "#/components/schemas/Meal"
+              quantity:
+                type: integer
+        orderDatetime:
+          type: string
+          format: date-time
+
+    CreateOrder:
+      type: object
+      properties:
+        reference:
+          type: string
+        meals:
+          type: array
+          items:
+            type: object
+            properties:
+              meal:
+                $ref: "#/components/schemas/Meal"
+              quantity:
+                type: integer
+
+    UpdateOrder:
+      type: object
+      properties:
+        reference:
+          type: string
+        meals:
+          type: array
+          items:
+            type: object
+            properties:
+              meal:
+                $ref: "#/components/schemas/Meal"
+              quantity:
+                type: integer
